@@ -12,16 +12,19 @@ class SubmissionModule:
         os.makedirs(self.output_path, exist_ok=True)
 
     def transform_coordinates_to_epgs(self, dst, layout, target_crs=None):
-        dst = dst[:, 0, :]
-        # Получаем преобразование координат изображения
-        transform = layout.transform
-        # Определяем исходную координатную систему
-        src_crs = layout.crs
-        spatial_coords = np.array([list(rasterio.transform.xy(transform, pixel[0], pixel[1])) for pixel in dst])
-        if src_crs.to_string() != target_crs.to_string():
-            spatial_coords_x, spatial_coords_y = rasterio.warp.transform(src_crs, target_crs, spatial_coords[:, 0], spatial_coords[:, 1])
-            spatial_coords = np.column_stack((spatial_coords_x, spatial_coords_y))
-        return spatial_coords
+        if (np.sum(dst) != 0):
+            dst = dst[:, 0, :]
+            # Получаем преобразование координат изображения
+            transform = layout.transform
+            # Определяем исходную координатную систему
+            src_crs = layout.crs
+            spatial_coords = np.array([list(rasterio.transform.xy(transform, pixel[0], pixel[1])) for pixel in dst])
+            if src_crs.to_string() != target_crs.to_string():
+                spatial_coords_x, spatial_coords_y = rasterio.warp.transform(src_crs, target_crs, spatial_coords[:, 0], spatial_coords[:, 1])
+                spatial_coords = np.column_stack((spatial_coords_x, spatial_coords_y))
+            return spatial_coords
+        else:
+            return dst
 
     def write_coordinates_to_file(self, file_path, coords):
         with open(os.path.join(self.output_path, file_path), 'w') as file:
