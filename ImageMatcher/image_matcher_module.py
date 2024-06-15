@@ -109,12 +109,15 @@ class ImageMatcher:
     return key_points, descriptors
 
 
-  def matching(self, scene_img, layout_img, scene_mask=None, layout_mask=None):
-    key_points1, descriptors1 = self.get_key_points_and_descriptors(scene_img, scene_mask, 'scene')
-    key_points2, descriptors2 = self.get_key_points_and_descriptors(layout_img, layout_mask, 'layout')
-    print(f"scene_img - {len(key_points1)} features, layout_img - {len(key_points2)} features")
+  def matching(self, scene_img, layout_img, scene_mask=None, layout_mask=None, use_previous_scene_results=False, use_previous_layout_results=False):
+    print('Load Matching Process...')
+    if not use_previous_scene_results:
+      self.key_points1, self.descriptors1 = self.get_key_points_and_descriptors(scene_img, scene_mask, 'scene')
+    if not use_previous_layout_results:
+      self.key_points2, self.descriptors2 = self.get_key_points_and_descriptors(layout_img, layout_mask, 'layout')
+    print(f"scene_img - {len(self.key_points1)} features, layout_img - {len(self.key_points2)} features")
 
-    matches = self.get_matches(descriptors1, descriptors2)
+    matches = self.get_matches(self.descriptors1, self.descriptors2)
 
     # Ratio test по методу Д.Лоу  для фильтрации хороших совпадений
     # Для каждого совпадения вычисляется отношение расстояний между дескриптором и его ближайшим и вторым по близости соседями.
@@ -126,12 +129,12 @@ class ImageMatcher:
 
     # Draw matches between keypoints
     if(self.draw_matches_on_img):
-      matching_res = cv2.drawMatchesKnn(cv2.cvtColor(scene_img, cv2.COLOR_RGB2BGR), key_points1, cv2.cvtColor(layout_img, cv2.COLOR_RGB2BGR), key_points2, good_matches, None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS, matchColor=(0, 0, 255))
+      matching_res = cv2.drawMatchesKnn(cv2.cvtColor(scene_img, cv2.COLOR_RGB2BGR), self.key_points1, cv2.cvtColor(layout_img, cv2.COLOR_RGB2BGR), self.key_points2, good_matches, None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS, matchColor=(0, 0, 255))
       cv2.imwrite('matches_res.jpg', matching_res)
 
     if len(good_matches) > self.MIN_MATCHES:
-      src_points = np.float32([key_points1[match[0].queryIdx].pt for match in good_matches]).reshape(-1, 1, 2)
-      dst_points = np.float32([key_points2[match[0].trainIdx].pt for match in good_matches]).reshape(-1, 1, 2)
+      src_points = np.float32([self.key_points1[match[0].queryIdx].pt for match in good_matches]).reshape(-1, 1, 2)
+      dst_points = np.float32([self.key_points2[match[0].trainIdx].pt for match in good_matches]).reshape(-1, 1, 2)
       # Оценка гомографии
       h, status = cv2.findHomography(src_points, dst_points, self.homog, ransacReprojThreshold=4.5, maxIters=10000, confidence=0.99)
       if h is not None and h.shape == (3, 3):
@@ -141,14 +144,15 @@ class ImageMatcher:
         # Get coordinates
         pts = np.float32([[0, 0], [0, t_h], [t_w, t_h], [t_w, 0]]).reshape(-1, 1, 2)
         dst = np.int32(cv2.perspectiveTransform(pts, h))
+        dst = np.clip(dst, a_min=0, a_max=None) # если есть отрицательные координаты, то делаем clip до 0
         return dst, num_inliers
       else:
         print('Homography could not be computed')
-        dst = np.float32([[0, 0], [0, 0], [0, 0], [0, 0]]).reshape(-1, 1, 2)
+        dst = np.array([[0, 0], [0, 0], [0, 0], [0, 0]])
         return dst, 0
     else:
       print('Good matches were not found')
-      dst = np.float32([[0, 0], [0, 0], [0, 0], [0, 0]]).reshape(-1, 1, 2)
+      dst = np.array([[0, 0], [0, 0], [0, 0], [0, 0]])
       return dst, 0
 
 
@@ -174,6 +178,7 @@ class ImageMatcher:
 
 
   def refine_detection(self, dst, offset, scene_img, layout_img, scene_mask=None, layout_mask=None):
+    print('Load Refine Detection Results...')
     # Определение минимальных и максимальных координат
     x_min, y_min = np.min(dst, axis=0)[0]
     x_max, y_max = np.max(dst, axis=0)[0]
@@ -198,7 +203,9 @@ class ImageMatcher:
     new_dst, num_inliers = self.matching(scene_img=scene_img,
                                          layout_img=new_layout_img,
                                          scene_mask=scene_mask,
-                                         layout_mask=new_layout_mask)
+                                         layout_mask=new_layout_mask,
+                                         use_previous_scene_results=True,
+                                         use_previous_layout_results=False)
     # Возвращение новых координат с учетом смещения
     return new_dst + total_offset, num_inliers
 
@@ -207,22 +214,3 @@ class ImageMatcher:
     plt.figure(figsize=(15, 15))
     plt.imshow(layout_img, cmap='gray')
     plt.show()
-
-  def calculate_angle(self, p1, p2, p3):
-    # Вычисление угла между векторами p1p2 и p2p3
-    v1 = p1 - p2
-    v2 = p3 - p2
-    cos_angle = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-    angle = np.arccos(np.clip(cos_angle, -1.0, 1.0))
-    return np.degrees(angle)
-
-  def is_rectangular(self, dst, tolerance=30):
-    # Проверка, что все углы близки к 90 градусам с заданной погрешностью
-    p1, p2, p3, p4 = dst
-    angles = [
-      self.calculate_angle(np.array(p4), np.array(p1), np.array(p2)),
-      self.calculate_angle(np.array(p1), np.array(p2), np.array(p3)),
-      self.calculate_angle(np.array(p2), np.array(p3), np.array(p4)),
-      self.calculate_angle(np.array(p3), np.array(p4), np.array(p1))
-    ]
-    return all(abs(angle - 90) < tolerance for angle in angles)

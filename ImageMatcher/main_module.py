@@ -21,7 +21,7 @@ class MainModule:
                                           ratio_test=0.75,
                                           draw_matches_on_img=False)
 
-    def make_matching(self, scene_path, layout_path):
+    def make_matching(self, scene_path, layout_path, refinement=True):
 
         scene_name = os.path.basename(scene_path)
         layout_name = os.path.basename(layout_path)
@@ -41,6 +41,14 @@ class MainModule:
 
         dst, num_inliers = self.img_matcher.matching(scene_img=scene_edges.astype(np.uint8),
                                                      layout_img=layout_edges.astype(np.uint8))
+        if refinement:
+            if num_inliers < 300:
+                new_dst, new_num_inliers = self.img_matcher.refine_detection(dst=dst,
+                                                                         offset=200,
+                                                                         scene_img=scene_edges.astype(np.uint8),
+                                                                         layout_img=layout_edges.astype(np.uint8))
+                if new_num_inliers >= num_inliers + 10:
+                    dst = new_dst
 
         spatial_coords = self.submission_module.transform_coordinates_to_epgs(dst=dst / (image_processing_module.reduction_factor),
                                                                               layout=image_processing_module.layout,
