@@ -46,13 +46,15 @@ class MainModule:
                                                                               layout=image_processing_module.layout,
                                                                               target_crs=CRS.from_epsg(32637))
 
-        self.submission_module.write_results_to_csv_file(file_path='final_coords.csv',
+        result = self.submission_module.write_results_to_csv_file(file_path='final_coords.csv',
                                                          scene_name=scene_name,
                                                          layout_name=layout_name,
                                                          bounds=spatial_coords,
                                                          crs=CRS.from_epsg(32637),
                                                          start_time=start_time,
                                                          end_time=datetime.now())
+        
+        return result
 
 
 

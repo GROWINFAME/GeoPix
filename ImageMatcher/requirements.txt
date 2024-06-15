@@ -5,3 +5,5 @@ matplotlib==3.9.0
 scikit-image==0.23.2
 pillow==10.3.0
 opencv-python-headless==4.10.0.82
+uvicorn==0.30.1
+fastapi==0.111.0

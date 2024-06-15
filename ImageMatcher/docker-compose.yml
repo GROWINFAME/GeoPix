@@ -1,0 +1,14 @@
+services:
+
+  image-matcher:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - C:\Users\Ilia\Desktop\GeoPix\data\18.Sitronics\layouts:/application/layouts
+      - C:\Users\Ilia\Desktop\GeoPix\results:/application/results
+    restart: always
+    ports:
+      - 0.0.0.0:8000:8000

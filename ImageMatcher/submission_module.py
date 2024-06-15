@@ -84,3 +84,5 @@ class SubmissionModule:
         }
         df.loc[len(df.index)] = list(new_row.values())
         df.to_csv(os.path.join(self.output_path, file_path), index=False, encoding='utf-8')
+
+        return new_row
