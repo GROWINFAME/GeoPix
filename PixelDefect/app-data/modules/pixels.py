@@ -1,15 +1,16 @@
 import numpy as np
 import pandas as pd
 import rasterio
-
 from skimage.exposure import equalize_hist
+
+from constants import RESULT_FOLDER
 
 
 class PixelCorrector:
 
     def __init__(self, crop_path, result_filename, P=3, Q=3, threshold=99.9):
         self.crop_path = crop_path
-        self.result_filename = result_filename
+        self.result_filename = f"{RESULT_FOLDER}/{result_filename}"
         self.P = P
         self.Q = Q
         self.threshold = threshold

@@ -2,7 +2,7 @@ services:
 
   image-matcher:
     build:
-      context: ./
+      context: ./app-data/
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
