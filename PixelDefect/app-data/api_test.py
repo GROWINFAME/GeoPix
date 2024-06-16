@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 url = 'http://localhost:8001/api/'
 
 # Пути к файлам
-file_path = 'E:\ml_hakaton\data\original\crops\crop_0_1_0000.tif'
+file_path = '/home/nikita/workprojects/хакатон/GeoPix/PixelDefect/crop_2_2_0000.tif'
 
 # Заголовки запроса
 headers = {
@@ -16,7 +16,7 @@ headers = {
 
 # Файлы для загрузки
 files = {
-    'scene': (file_path, open(file_path, 'rb'), 'image/tiff')
+    'scene': ('crop_2_2_0000.tif', open(file_path, 'rb'), 'image/tiff')
 }
 
 # Отправка POST-запроса
