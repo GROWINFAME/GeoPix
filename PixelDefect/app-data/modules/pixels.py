@@ -130,4 +130,4 @@ class PixelCorrector:
         img = self._read_file()
         anomalies = self._correct_rgb(img)
         self._to_csv(anomalies)
-        return
+        return anomalies
