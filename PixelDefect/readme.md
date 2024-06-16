@@ -19,3 +19,4 @@
 - tg: @kkk145
 
 # Видео инструкция
+**[Ссылка](https://disk.yandex.ru/i/A5SEYXEXHxwBlQ)**
