@@ -38,4 +38,5 @@ def upload_photo(scene: UploadFile = File(...)):
     if os.path.exists(scene_name):
         os.remove(scene_name)
 
-    return FileResponse(res_name)
+    headers = {"Content-Disposition": f"attachment; filename={res_name}"}
+    return FileResponse(res_name, headers=headers)
