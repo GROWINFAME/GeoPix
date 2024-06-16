@@ -7,7 +7,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - C:\Users\Ilia\Desktop\GeoPix\results1:/application/results
+      - ./results:/application/results
     restart: always
     ports:
       - 0.0.0.0:8001:8000

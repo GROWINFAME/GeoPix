@@ -7,8 +7,8 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - C:\Users\Ilia\Desktop\GeoPix\data\18.Sitronics\layouts:/application/layouts
-      - C:\Users\Ilia\Desktop\GeoPix\results:/application/results
+      - ./layouts:/application/layouts
+      - ./results:/application/results
     restart: always
     ports:
       - 0.0.0.0:8000:8000
