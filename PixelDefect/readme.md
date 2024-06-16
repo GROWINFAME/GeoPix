@@ -1,31 +1,14 @@
 # Поиск и исправление битых пикселей
 
-Пример использования:
+### Пример использования:
 
-```
-from pixels import PixelCorrector
+1) Запустите приложение через ```Docker``` из директории ```PixelDefect```, где лежит docker-compose файл следующей командой
+```docker compose up --build```
 
-px = PixelCorrector(r'C:\Users\sveta\Python Projects\sitronics_images\1_20\crop_1_0_0000.tif', 'anomalies.csv')
-px.correct()
-```
+2) После запуска вы можете отправить на сервер (localhost:8001) запрос с помощью ```Postman/Python/FastAPI swagger```
 
-Параметры:
+- **Postman** - коллекция доступна в гитхабе
+- **FastAPI swagger** доступен по ссылке http://localhost:8001/docs#/ после запуска приложения, в UI будет небходимо загрузить изображение и нажать ```Execute```
+- **Python (рекомендованный метод)** - запустите ```app-data/api_test.py```, предварительно установив необходимые библиотеки и указав путь до изображения
 
-- ```crop_path``` - абсолютный путь до снимка
-- ```result_filename``` - csv-файл для сохранения результатов
-- ```P``` - окрестности точки для восстановления, Y
-- ```Q``` - окрестности точки для восстановления, X
-- ```threshold``` - персентиль для определения аномалий, значения 0-100
-
-```
-from pixels import Pixel2Corrector
-
-px = Pixel2Corrector(r'C:\Users\sveta\Python Projects\sitronics_images\1_20\crop_1_0_0000.tif', 'anomalies.csv')
-px.correct()
-```
-
-Параметры:
-
-- ```crop_path``` - абсолютный путь до снимка
-- ```result_filename``` - csv-файл для сохранения результатов
-
+# Видео инструкция
