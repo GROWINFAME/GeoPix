@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "7e49965b-b870-461f-be48-14e21c4d6bad",
+		"name": "ImageMatcher",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22110993"
+	},
+	"item": [
+		{
+			"name": "api_call",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "scene",
+							"type": "file",
+							"src": "/C:/Users/Ilia/Desktop/data/18.Sitronics/1_20/crop_0_0_0000.tif"
+						},
+						{
+							"key": "layout",
+							"value": "layout_2021-06-15.tif",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
