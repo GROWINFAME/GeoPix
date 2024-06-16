@@ -19,3 +19,6 @@
 
 - [ImageMatcher](https://github.com/GROWINFAME/GeoPix/tree/main/ImageMatcher) - содержит решение задачи локализации и геопривязки спутниковых сцен с инструкцией по запуску.
 - [PixelDefect](https://github.com/GROWINFAME/GeoPix/tree/main/PixelDefect) - содержит решение задачи поиска и восстановления битых пикселей с инструкцией по запуску.
+
+### Ссылка на презентацию
+- [Презентация решения команды VSU Team] (https://disk.yandex.ru/edit/d/Lq25XwhMm3T3flUrixdpaCPegnqahzm72s0qoIz-cKg6ZDlEYU5KYk1nQQ)
