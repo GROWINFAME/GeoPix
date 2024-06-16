@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "c755d5d2-c20b-4e36-a6e8-127e339f35af",
+		"name": "PixelDefect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22110993"
+	},
+	"item": [
+		{
+			"name": "api_call",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "scene",
+							"type": "file",
+							"src": "/C:/Users/Ilia/Desktop/data/18.Sitronics/1_20/crop_4_2_0000.tif"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
