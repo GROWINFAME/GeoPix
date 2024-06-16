@@ -18,12 +18,12 @@ def upload_photo(layout: str = Form(...), scene: UploadFile = File(...)):
     # check if layout exists
     LAYOUT_PATH = f"{LAYOUT_FOLDER}/{layout}"
     if not os.path.exists(LAYOUT_PATH):
-        return {"result": "error", "text": f"No layout with name '{layout}'"}, 400
+        return {"result": "error", "text": f"No layout with name '{layout}'"}
 
     # check if scene with right format
     scene_name = scene.filename
     if not scene_name.endswith(".tif"):
-        return {"result": "error", "text": "Send picture in '.tif' format"}, 400
+        return {"result": "error", "text": "Send picture in '.tif' format"}
 
     # temporary save scene in docker container
     with open(scene_name, 'wb') as f:
@@ -37,4 +37,4 @@ def upload_photo(layout: str = Form(...), scene: UploadFile = File(...)):
     if os.path.exists(scene_name):
         os.remove(scene_name)
 
-    return {"result": result, "text": "All results also saved in coords.csv"}, 200
+    return {"result": result, "text": "All results also saved in coords.csv"}

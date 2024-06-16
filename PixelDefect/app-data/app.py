@@ -18,7 +18,7 @@ def upload_photo(scene: UploadFile = File(...)):
     # check if scene with right format
     scene_name = scene.filename
     if not scene_name.endswith(".tif"):
-        return {"result": "error", "text": "Send picture in '.tif' format"}, 400
+        return {"result": "error", "text": "Send picture in '.tif' format"}
 
     # temporary save scene in docker container
     with open(scene_name, 'wb') as f:
@@ -38,4 +38,5 @@ def upload_photo(scene: UploadFile = File(...)):
     if os.path.exists(scene_name):
         os.remove(scene_name)
 
-    return FileResponse(res_name)
+    headers = {"Content-Disposition": f"attachment; filename={res_name}"}
+    return FileResponse(res_name, headers=headers)
