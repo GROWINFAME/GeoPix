@@ -21,7 +21,7 @@
 
 3) Запустите из python env в директории app-data следующую команду ```python api_test.py --crop_name path/to/crop.tif```
 
-4) Получите результаты в виде ```csv``` и ```tif``` в volume папке ```./results```
+4) Получите результаты в виде ```csv``` и ```tif``` в volume-папке ```./results```
 
 ### Контакты для помощи в запуске
 - tg: @kkk145
