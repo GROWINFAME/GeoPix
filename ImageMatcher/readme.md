@@ -16,6 +16,19 @@
 
 *Также вы самостоятельно можете менять пути до папки с результатами/подложками и изменить порт в ```docker-compose``` файле*
 
+### Argparse
+1) Положите подложки в папку ```layouts``` (volume нашего приложения)
+
+2) Запустите приложение через ```Docker``` из директории ```ImageMatcher```, где лежит ```docker-compose``` файл следующей командой
+```docker compose up --build```
+
+3) Запустите из python env в директории app-data следующую команду 
+```python api_test.py --crop_name path/to/crop.tif --layout_name path/to/layout.tif```
+
+*ВАЖНО: путь до подложки (layout) должен совпадать с volume, указаннным в ```docker-compose```*
+
+4) Получите результаты в виде ```csv``` в volume папке ```./results```
+
 ### Контакты для помощи в запуске
 - tg: @kkk145
 
