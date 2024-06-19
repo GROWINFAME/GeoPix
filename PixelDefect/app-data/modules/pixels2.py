@@ -11,7 +11,7 @@ class Pixel2Corrector:
 
     def __init__(self, crop_path, result_filename, k=3):
         self.crop_path = crop_path
-        self.result_filename = f"{RESULT_FOLDER}/{result_filename}"
+        self.result_filename = f"{RESULT_FOLDER}/{result_filename.replace('0000', 'corr')}"
         self.k = k
 
     def _restore_pixel(self, image, center_x, center_y):
@@ -119,9 +119,17 @@ class Pixel2Corrector:
 
         anomalies, final_img = self._get_data(original_img)
         self._to_csv(anomalies)
+        self._to_tiff(final_img)
         return final_img
 
     def _to_csv(self, anomalies):
         df = pd.DataFrame(anomalies)
         df.to_csv(self.result_filename)
+        return
+    
+    def _to_tiff(self, final_img):
+        c, h, w = final_img.shape
+        with rasterio.open(self.result_filename.replace(".csv", ".tif"), mode='w', height=h, width=w, driver='GTiff', count=c,
+                       dtype=rasterio.uint16) as dst:
+            dst.write(final_img)
         return

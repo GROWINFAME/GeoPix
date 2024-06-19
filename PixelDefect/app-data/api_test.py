@@ -1,40 +1,43 @@
+import argparse
 import numpy as np
 import rasterio
 import requests
 from matplotlib import pyplot as plt
+import os
 
-# URL для запроса
-url = 'http://localhost:8001/api/'
+def main(crop_name):
+    # URL для запроса
+    url = 'http://localhost:8001/api/'
 
-# Пути к файлам
-file_path = '/home/nikita/workprojects/хакатон/GeoPix/PixelDefect/crop_2_2_0000.tif'
+    # Проверка наличия файла
+    if not os.path.isfile(crop_name):
+        print(f"Ошибка: файл {crop_name} не найден.")
+        return
 
-# Заголовки запроса
-headers = {
-    'accept': 'application/json'
-}
+    # Заголовки запроса
+    headers = {
+        'accept': 'application/json'
+    }
 
-# Файлы для загрузки
-files = {
-    'scene': ('crop_2_2_0000.tif', open(file_path, 'rb'), 'image/tiff')
-}
+    # Файлы для загрузки
+    files = {
+        'scene': (os.path.basename(crop_name), open(crop_name, 'rb'), 'image/tiff')
+    }
 
-# Отправка POST-запроса
-response = requests.post(url, headers=headers, files=files)
+    # Отправка POST-запроса
+    response = requests.post(url, headers=headers, files=files)
 
-# Обработка ответа
-print(response.status_code)
-with open('restored.tiff', 'wb') as file:
-    file.write(response.content)
+    # Обработка ответа
+    print(response.status_code)
+    if response.status_code == 200:
+        print("Проверьте папку с результатами!")
+    else:
+        print("Ошибка получения ответа от сервера:", response.text)
 
-with rasterio.open(file_path) as src:
-    original_img = src.read()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Запуск скрипта с параметром crop_name.')
+    parser.add_argument('--crop_name', required=True, help='Полный путь к файлу crop_name')
 
-plt.imshow(np.transpose(original_img[:-1], axes=[1, 2, 0]) // 255 * 6)
-plt.show()
+    args = parser.parse_args()
 
-with rasterio.open('restored.tiff') as src:
-    restored_img = src.read()
-
-plt.imshow(np.transpose(restored_img[:-1], axes=[1, 2, 0]) // 255 * 6)
-plt.show()
+    main(args.crop_name)
